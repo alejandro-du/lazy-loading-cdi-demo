@@ -13,6 +13,6 @@ import javax.enterprise.context.ApplicationScoped;
 @Repository
 public abstract class PersonRepository implements EntityRepository<Person, Long> {
 
-    public abstract QueryResult<Person> findBy();
+    public abstract QueryResult<Person> findByEmailLike(String email);
 
 }
