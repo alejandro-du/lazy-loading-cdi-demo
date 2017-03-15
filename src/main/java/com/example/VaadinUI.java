@@ -1,6 +1,7 @@
 package com.example;
 
 import com.vaadin.cdi.CDIUI;
+import com.vaadin.data.provider.QuerySortOrder;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.Grid;
@@ -8,8 +9,8 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 import javax.inject.Inject;
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * @author Alejandro Duarte
@@ -27,10 +28,11 @@ public class VaadinUI extends UI {
 
         grid.setDataProvider(
                 (sortOrders, offset, limit) -> {
-                    Map<String, Boolean> sortOrder = sortOrders.stream()
-                            .collect(Collectors.toMap(
-                                    sort -> sort.getSorted(),
-                                    sort -> sort.getDirection() == SortDirection.ASCENDING));
+                    Map<String, Boolean> sortOrder = new LinkedHashMap<>();
+
+                    for (QuerySortOrder order : sortOrders) {
+                        sortOrder.put(order.getSorted(), order.getDirection().equals(SortDirection.ASCENDING));
+                    }
 
                     return service.findAll(offset, limit, sortOrder).stream();
                 },
