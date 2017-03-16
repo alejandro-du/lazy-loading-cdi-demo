@@ -17,11 +17,9 @@ public class PersonService {
     private PersonRepository repository;
 
     public List<Person> findAll(int offset, int limit, Map<String, Boolean> sortOrders) {
-        // there's a bug in Delta Spike Data that prevent us from using a repository method without having a filter
-        // predicate (such as findBy) and return a QueryResult at the same time. As a workaround we defined a
-        // repository with a filter predicate and pass "%" in order to query all the results.
-        QueryResult<Person> result = repository.findByEmailLike("%");
+        QueryResult<Person> result = repository.findAllPersons();
         result.firstResult(offset).maxResults(limit);
+
         sortOrders.entrySet().stream().forEach(order -> {
             if (order.getValue()) {
                 result.orderAsc(order.getKey());
